@@ -1,0 +1,73 @@
+name: bankApp
+
+services:
+  accounts-db:
+    image: "harbor.avalaunch.aval/docker-hub-proxy/library/postgres:latest"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: accounts
+    ports:
+      - "5432:5432"
+    volumes:
+      - accounts-data:/var/lib/postgresql/data
+    networks:
+      bank-network:
+  cards-db:
+    image: "harbor.avalaunch.aval/docker-hub-proxy/library/postgres:latest"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: cards
+    ports:
+      - "5433:5432"
+    volumes:
+      - cards-data:/var/lib/postgresql/data
+    networks:
+      bank-network:
+  loans-db:
+    image: "harbor.avalaunch.aval/docker-hub-proxy/library/postgres:latest"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: loans
+    ports:
+      - "5434:5432"
+    volumes:
+      - loans-data:/var/lib/postgresql/data
+    networks:
+      bank-network:
+
+  accounts-service:
+    image: "solvation95/accounts"
+    ports:
+      - "8080:8080"
+    networks:
+      bank-network:
+    depends_on:
+      - accounts-db
+  cards-service:
+    image: "solvation95/cards"
+    ports:
+      - "9001:8080"
+    networks:
+      bank-network:
+    depends_on:
+      - cards-db
+  loans-service:
+    image: "solvation95/loans"
+    ports:
+      - "9002:8080"
+    networks:
+      bank-network:
+    depends_on:
+      - loans-db
+
+networks:
+  bank-network:
+
+volumes:
+  accounts-data:
+  cards-data:
+  loans-data:
+

@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: cards
+  datasource:
+    url: jdbc:postgresql://cards-db:5432/cards
+    username: postgres
+    password: postgres
+  flyway:
+    enabled: true
+  jpa:
+    show-sql: true
+
+server:
+  port: 8080

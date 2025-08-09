@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS loan (
+  loan_id serial PRIMARY KEY,
+  mobile_number varchar(100) NOT NULL,
+  loan_number varchar(100) NOT NULL,
+  loan_type varchar(100) NOT NULL,
+  total_loan int NOT NULL,
+  amount_paid int NOT NULL,
+  outstanding_amount int NOT NULL
+);

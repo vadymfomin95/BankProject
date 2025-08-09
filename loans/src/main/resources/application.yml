@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: loans
+  datasource:
+    url: jdbc:postgresql://localhost:5434/loans
+    username: postgres
+    password: postgres
+    flyway:
+      enabled: true
+    jpa:
+      show-sql: true
+  config:
+    import: configserver:http://localhost:8888
+
+server:
+  port: 8081
+
