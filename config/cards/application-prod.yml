@@ -1,5 +1,5 @@
 cards:
-  message: Welcome to the Cards Service prod
+  message: Welcome to the Cards Service production
   contact-details:
     name: Vadym Fomin
     email: vadym.fomin.production@gmail.com
