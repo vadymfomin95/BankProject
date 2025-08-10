@@ -1,5 +1,5 @@
 loans:
-  message: Welcome to the Loans Service production
+  message: Welcome to the Loans Service with service bus production
   contact-details:
     name: Vadym Fomin
     email: vadym.fomin.production@gmail.com
