@@ -1,0 +1,5 @@
+accounts:
+  message: Welcome to the Accounts Service default
+  contact-details:
+    name: Vadym Fomin
+    email: vadym.fomin.default@gmail.com
