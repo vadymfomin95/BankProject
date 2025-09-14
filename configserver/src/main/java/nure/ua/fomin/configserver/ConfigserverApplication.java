@@ -9,7 +9,9 @@ import org.springframework.cloud.config.server.EnableConfigServer;
 public class ConfigserverApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ConfigserverApplication.class, args);
+		var springApplication = new SpringApplication(ConfigserverApplication.class);
+		springApplication.addInitializers(new TruststoreInitializer());
+		springApplication.run(args);
 	}
 
 }

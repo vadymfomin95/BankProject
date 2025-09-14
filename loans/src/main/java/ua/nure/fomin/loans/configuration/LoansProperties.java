@@ -1,10 +1,21 @@
 package ua.nure.fomin.loans.configuration;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "loans")
-public record LoansProperties(String message, ContactDetails contactDetails) {
+@Data
+public class LoansProperties {
 
-    public record ContactDetails(String name, String email) {
+    private String message;
+    private ContactDetails contactDetails;
+
+    @AllArgsConstructor
+    @Data
+    static class ContactDetails {
+
+        private String name;
+        private String email;
     }
 }

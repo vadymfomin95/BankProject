@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/accounts
+    username: postgres
+    password: postgres
+  config:
+    import: configserver:http://localhost:8888
+  kafka:
+    bootstrap-servers: localhost:9092
+
+server:
+  port: 9003
