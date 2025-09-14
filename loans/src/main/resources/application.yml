@@ -1,17 +1,18 @@
 spring:
   application:
     name: loans
-  datasource:
-    url: jdbc:postgresql://localhost:5434/loans
-    username: postgres
-    password: postgres
     flyway:
       enabled: true
     jpa:
       show-sql: true
-  config:
-    import: configserver:http://localhost:8888
+  cloud:
+    config:
+      uri:
+    bus:
+      enabled: true
 
-server:
-  port: 8081
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

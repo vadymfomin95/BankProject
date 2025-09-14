@@ -1,14 +1,18 @@
 spring:
   application:
     name: cards
-  datasource:
-    url: jdbc:postgresql://cards-db:5432/cards
-    username: postgres
-    password: postgres
   flyway:
     enabled: true
   jpa:
     show-sql: true
+  config:
+    import: configserver:http://config-service:8888
+  cloud:
+    bus:
+      enabled: true
 
-server:
-  port: 8080
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
