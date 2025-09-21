@@ -3,8 +3,10 @@ package ua.nure.fomin.cards.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +26,7 @@ import ua.nure.fomin.cards.service.CardService;
 @RequestMapping("/api/cards")
 @RequiredArgsConstructor
 @Tag(name = "Card Management", description = "Operations for managing cards")
+@Slf4j
 public class CardController {
 
     private final CardService cardService;
@@ -105,7 +108,12 @@ public class CardController {
             content = @io.swagger.v3.oas.annotations.media.Content(
                             schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorResponse.class)))
     })
-    public CardDTO findByMobileNumber(@PathVariable String mobileNumber) {
+    public CardDTO findByMobileNumber(@PathVariable String mobileNumber, HttpServletRequest request) {
+        String serverInfo = String.format("Server: %s:%s",
+                request.getServerName(),
+                request.getServerPort());
+
+        log.info("Request handled by: {} for mobile number: {}", serverInfo, mobileNumber);
         return cardMapper.toDTO(cardService.findByMobileNumber(mobileNumber));
     }
 }

@@ -97,6 +97,17 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  service-discovery:
+    image: "solvation95/service-discovery"
+    ports:
+      - "8761:8761"
+    networks:
+      bank-network:
+    healthcheck:
+      test: "curl --fail http://localhost:8761/actuator/health || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 5
   accounts-service:
     image: "solvation95/accounts"
     ports:
@@ -107,6 +118,8 @@ services:
       accounts-db:
         condition: service_healthy
       config-service:
+        condition: service_healthy
+      service-discovery:
         condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: dev
@@ -120,7 +133,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-  cards-service:
+  cards-service-1:
     image: "solvation95/cards"
     ports:
       - "9001:8080"
@@ -130,6 +143,8 @@ services:
       cards-db:
         condition: service_healthy
       config-service:
+        condition: service_healthy
+      service-discovery:
         condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: dev
@@ -142,6 +157,30 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  cards-service-2:
+    image: "solvation95/cards"
+    networks:
+      bank-network:
+    depends_on:
+      cards-db:
+        condition: service_healthy
+      config-service:
+        condition: service_healthy
+      service-discovery:
+        condition: service_healthy
+    environment:
+      SERVER_PORT: 8081
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_DATASOURCE_URL: jdbc:postgresql://cards-db:5432/cards
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    healthcheck:
+      test: "curl --fail http://localhost:8080/actuator/health || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   loans-service:
     image: "solvation95/loans"
     ports:
@@ -152,6 +191,8 @@ services:
       loans-db:
         condition: service_healthy
       config-service:
+        condition: service_healthy
+      service-discovery:
         condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: dev

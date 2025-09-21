@@ -11,6 +11,13 @@ spring:
     bus:
       enabled: true
 
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://service-discovery:8761/eureka/
+
 management:
   endpoints:
     web:

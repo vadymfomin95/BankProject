@@ -19,11 +19,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.nure.fomin.accounts.dto.AccountDTO;
-import ua.nure.fomin.accounts.dto.AccountDetailsDTO;
+import ua.nure.fomin.accounts.dto.AccountShortInfoDTO;
 import ua.nure.fomin.accounts.dto.ErrorResponse;
 import ua.nure.fomin.accounts.entity.Account;
-import ua.nure.fomin.accounts.mapper.AccountDetailsMapper;
+import ua.nure.fomin.accounts.entity.AccountDetails;
 import ua.nure.fomin.accounts.mapper.AccountMapper;
+import ua.nure.fomin.accounts.service.AccountDetailsService;
 import ua.nure.fomin.accounts.service.AccountService;
 
 import java.util.List;
@@ -36,23 +37,22 @@ import java.util.stream.Collectors;
 public class AccountController {
 
     private final AccountService accountService;
+    private final AccountDetailsService accountDetailsService;
 
     private final AccountMapper accountMapper;
-
-    private final AccountDetailsMapper accountDetailsMapper;
 
     @GetMapping
     @Operation(summary = "Get all accounts", description = "Retrieves a list of all accounts")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved accounts",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = AccountDTO.class)))),
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = AccountShortInfoDTO.class)))),
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    public List<AccountDTO> getAllAccounts() {
+    public List<AccountShortInfoDTO> getAllAccounts() {
         return accountService.findAll()
                 .stream()
-                .map(accountMapper::toDTO)
+                .map(accountMapper::toShortInfoDTO)
                 .collect(Collectors.toList());
     }
 
@@ -65,8 +65,8 @@ public class AccountController {
             @ApiResponse(responseCode = "400", description = "Bad request, validation error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    public void save(@RequestBody @Valid AccountDetailsDTO accountDetails) {
-        Account account = accountDetailsMapper.toEntity(accountDetails);
+    public void save(@RequestBody @Valid AccountDTO accountDetails) {
+        Account account = accountMapper.toEntity(accountDetails);
         accountService.save(account);
     }
 
@@ -82,8 +82,8 @@ public class AccountController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     public void update(@PathVariable @Parameter(name = "accountNumber", description = "account number to update") Long accountNumber,
-                       @RequestBody @Valid AccountDetailsDTO accountDetails) {
-        Account accountToUpdate = accountDetailsMapper.toEntity(accountDetails);
+                       @RequestBody @Valid AccountDTO accountDetails) {
+        Account accountToUpdate = accountMapper.toEntity(accountDetails);
         accountService.update(accountNumber, accountToUpdate);
     }
 
@@ -104,14 +104,15 @@ public class AccountController {
     @Operation(summary = "Get account details by mobile phone", description = "Retrieves account details using the mobile phone number")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved account details",
-                    content = @Content(schema = @Schema(implementation = AccountDetailsDTO.class))),
+                    content = @Content(schema = @Schema(implementation = AccountDTO.class))),
             @ApiResponse(responseCode = "404", description = "Account not found",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    public AccountDetailsDTO getAccountDetails(@PathVariable @Parameter(name = "mobilePhone", description = "mobile phone to search") String mobilePhone) {
-        return accountDetailsMapper.toDTO(accountService.findByMobileNumber(mobilePhone));
+    public AccountDTO getAccountDetails(@PathVariable @Parameter(name = "mobilePhone", description = "mobile phone to search") String mobilePhone) {
+        AccountDetails details = accountDetailsService.getDetails(mobilePhone);
+        return accountMapper.toAccountDetailsDTO(details);
     }
 
 }
