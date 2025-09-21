@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/cards
+    url: jdbc:postgresql://localhost:5433/cards
     username: postgres
     password: postgres
   config:
@@ -8,6 +8,11 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
 
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
 server:
-  port: 9001
+  port: 9006
 
